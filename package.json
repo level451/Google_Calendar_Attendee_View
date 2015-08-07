@@ -1,7 +1,10 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
+  "name": "Google_Calendar_Attendee_View",
+  "description": "Grabs Calendar Events - translates attendee email addesses to names from google contact data, and post the results to a google drive csv",
+  "version": "0.1.0",
   "dependencies": {
-    "google-contacts-oauth": "^0.1.0"
+    "google-auth-library": "^0.9.6",
+    "google-contacts-oauth": "^0.1.0",
+    "googleapis": "^2.1.3"
   }
 }

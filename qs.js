@@ -9,19 +9,21 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 var TOKEN_PATH = 'calendar-api-quickstart.json';
 
 
+start();
+setInterval(function(){start(); }, 1000*60*5);
 
-
+function start() {
 // Load client secrets from a local file.
-fs.readFile('client_secret.json', function processClientSecrets(err, content) {
-  if (err) {
-    console.log('Error loading client secret file: ' + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Google Calendar API.
-    authorize(JSON.parse(content), gcMain);
-});
-
+    fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+        if (err) {
+            console.log('Error loading client secret file: ' + err);
+            return;
+        }
+        // Authorize a client with the loaded credentials, then call the
+        // Google Calendar API.
+        authorize(JSON.parse(content), gcMain);
+    });
+}
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
  * given callback function.
@@ -47,7 +49,7 @@ function authorize(credentials, callback) {
       oauth2Client.credentials = JSON.parse(token);
         //console.log();
 
-    console.log("credentials expire at:",new Date(oauth2Client.credentials.expiry_date))
+    console.log("credentials expire at:",new Date(oauth2Client.credentials.expiry_date));
 
     if (oauth2Client.credentials.expiry_date-new Date()>60000) {
         console.log("Minutes remaining:"+(oauth2Client.credentials.expiry_date-new Date())/60000);
@@ -103,7 +105,7 @@ function getNewToken(oauth2Client, callback) {
   });
   rl.question('Enter the code from that page here: ', function(code) {
     rl.close();
-    console.log("inputed code:"+code)
+    console.log("inputed code:"+code);
       oauth2Client.getToken(code, function(err, token) {
       if (err) {
         console.log('Error while trying to retrieve access token', err);
@@ -182,7 +184,7 @@ function gcMain(auth) {
                         var end = new Date(event.end.dateTime) || event.start.date;
                         outfile = outfile + '"' + (start.getMonth() + 1) + '/' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + '-' + end.getHours() + ':' + end.getMinutes() + '",' + textDay[start.getDay()] + ',';
                         outfile = outfile + event.summary + ',';
-                        process.stdout.write(".")
+                        process.stdout.write(".");
                         //  console.log(event.summary);
                         //console.log(start +'-'+ end);
 
