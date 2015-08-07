@@ -10,7 +10,7 @@ var TOKEN_PATH = 'calendar-api-quickstart.json';
 
 
 start();
-setInterval(function(){start(); }, 1000*60*60);
+setInterval(function(){start(); }, 1000*60*15);
 
 function start() {
 // Load client secrets from a local file.
@@ -69,7 +69,7 @@ function authorize(credentials, callback) {
              }else
             console.log("refreshed access token");
             storeToken(oauth2Client.credentials);
-            console.log("Minutes remaining:"+(oauth2Client.credentials.expiry_date-new Date())/60000);
+            console.log("Auth token remaining minutes valid:"+(oauth2Client.credentials.expiry_date-new Date())/60000);
 
             callback(oauth2Client);
 
@@ -90,7 +90,7 @@ function authorize(credentials, callback) {
  * execute the given callback with the authorized OAuth2 client.
  *
  * @param {google.auth.OAuth2} oauth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback to call with the authorized
+ * @param  callback The callback to call with the authorized
  *     client.
  */
 function getNewToken(oauth2Client, callback) {
@@ -154,14 +154,14 @@ function gcMain(auth) {
         }else
         {
             // ok got the contact data:
-            console.log('Number of Contacts received:' +(contactData.length),contactData[0].email.toLowerCase());
+            console.log('Number of Contacts received:' +(contactData.length));
             var calendar = google.calendar('v3');
-            x = new Date()
+            x = new Date();
             calendar.events.list({
                 auth: auth,
                 calendarId: 'primary',
-                timeMin: (new Date(2015,x.getMonth(), x.getDate()-1)).toISOString(), // first day of month 7
-                timeMax: (new Date(2015,8,1)).toISOString(), // last day of month 7
+                timeMin: (new Date(2015,x.getMonth(),x.getDate()-1)).toISOString(), // yesterday
+                timeMax: (new Date(2015,x.getMonth(),x.getDate()+45)).toISOString(), // next 45 or so days
                 maxResults: 1000,
                 singleEvents: true,
                 orderBy: 'startTime'
@@ -174,17 +174,21 @@ function gcMain(auth) {
                 if (events.length == 0) {
                     console.log('No upcoming events found.');
                 } else {
-                    var outfile = '';
+                    var outfile = "Last Updated:" +new Date().toString()+'\r\n';
                     var textDay=["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
 
                     console.log('Events found:',events.length);
+                  //  console.log(events[10]);
                     for (var i = 0; i < events.length; i++) {
                         var event = events[i];
                         var start = new Date(event.start.dateTime) || event.start.date;
-                        var end = new Date(event.end.dateTime) || event.start.date;
-                        outfile = outfile + '"' + (start.getMonth() + 1) + '/' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + '-' + end.getHours() + ':' + end.getMinutes() + '",' + textDay[start.getDay()] + ',';
+
+//                        outfile = outfile + '"' + (start.getMonth() + 1) + '/' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + '-' + end.getHours() + ':' + end.getMinutes() + '",' + textDay[start.getDay()] + ',';
+                        outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
                         outfile = outfile + event.summary + ',';
                         process.stdout.write(".");
+                        outfile = outfile+  ((new Date() - new Date(event.updated))/3600000)+',';
+
                         //  console.log(event.summary);
                         //console.log(start +'-'+ end);
 
@@ -197,45 +201,28 @@ function gcMain(auth) {
                                 if (typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
                                     name = contactData[y].name;
                                     process.stdout.write("+");
-
-                                    //process.stdout.write('found@'+name+'/r');
                                     break;
 
                                 }
                             }
-
                             outfile = outfile + name + ',' + event.attendees[x].responseStatus + ',';
-
-                            //   console.log(name+' '+event.attendees[x].email);
                         }
                     }else
                         {
                             // no attendees
-                            console.log("No attendes:",event);
-
-
-
+                            process.stdout.write("X");
                         }
 
                         outfile=outfile+'\r\n'
                     }
-                    //  console.log(events[1]);
-
-//        fs.writeFile("E:/ServerFolders/Users/Todd/Google Drive/Missionary/Calendar/calendar.csv", outfile, function(err) {
-//            if(err) {
-//                return console.log(err);
-//            }
-//
-//            console.log("The file was saved!");
-                    //       });
+                    console.log(":)");
 
                     var service = google.drive('v2');
-
 //        service.files.insert({
                     service.files.update({
                             auth: auth,
                             fileId:'0ByAeyQIq3nQzVjZQWk9mSk5TWm8',
-                            newRevision: true,
+                            newRevision: true, // store in revision history - maybe turn this off
                             resource: {
                                 title: 'Missionary Calendar',
                                 mimeType: 'text/csv'
@@ -243,72 +230,18 @@ function gcMain(auth) {
                                 mimeType: 'text/csv',
                                 body:outfile
                             }
-
-
                         },function(err,response){
                             if (err) {
                                 console.log('The file update API returned an error: ' + err);
                                 return;
                             }
-                            console.log('The file update API returned : ' + response);
-
+                            console.log('Wrote file to google drive:'+response.originalFilename,response.fileSize);
                         }
-
-
                     )
-
                 }
             });
 
-
-
-
-
-
-
-
-
-
-
-
         }
-
-
-
     });
-
-
-
-
-
-
-
-
 }
 
-function contact(auth) {
-    console.log(auth.credentials.access_token);
-//    return
-
-
-
-    var googleContacts = require('google-contacts-oauth');
-
-    var opts = {
-        token: auth.credentials.access_token
-
-    };
-    googleContacts(opts, function (err, contactData) {
-        console.log(err, contactData.length);
-    });
-//
-//    var GoogleContacts = require('google-contacts-api');
-//    var contacts = new GoogleContacts({ token : 'ya29.xwFT9D33K6w4GK0jxIzFVPJ0kdiJTgqTjuE7tZRzZ_hEXs_FlWkpWFdIDwr_iTxLSdKL' });
-//    contacts.getContacts(function(err, contacts) {
-//        console.log(err,contacts)
-//        // ...
-//    });
-//
-
-
-}
