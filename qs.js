@@ -10,7 +10,7 @@ var TOKEN_PATH = 'calendar-api-quickstart.json';
 
 
 start();
-setInterval(function(){start(); }, 1000*60*15);
+setInterval(function(){start(); }, 1000*60*30);
 
 function start() {
 // Load client secrets from a local file.
@@ -62,7 +62,7 @@ function authorize(credentials, callback) {
         console.log("Access taken expired refreshing access token");
         oauth2Client.refreshAccessToken(function(err, tokens) {
             // your access_token is now refreshed and stored in oauth2Client
-            console.log(err,tokens);
+            //console.log(err,tokens);
              if (err){
                  console.log("Error getting new access token:",err)
 
