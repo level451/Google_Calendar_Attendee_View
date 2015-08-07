@@ -10,7 +10,7 @@ var TOKEN_PATH = 'calendar-api-quickstart.json';
 
 
 start();
-setInterval(function(){start(); }, 1000*60*5);
+setInterval(function(){start(); }, 1000*60*60);
 
 function start() {
 // Load client secrets from a local file.
