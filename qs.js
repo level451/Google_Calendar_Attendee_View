@@ -235,7 +235,7 @@ function gcMain(auth) {
                                 console.log('The file update API returned an error: ' + err);
                                 return;
                             }
-                            console.log('Wrote file to google drive:'+response.originalFilename,response.fileSize);
+                            console.log('Wrote file to google drive:'+response.originalFilename,response.fileSize,new Date());
                         }
                     )
                 }
