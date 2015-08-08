@@ -160,7 +160,7 @@ function gcMain(auth) {
             calendar.events.list({
                 auth: auth,
                 calendarId: 'primary',
-                timeMin: (new Date(2015,x.getMonth(),x.getDate()-1)).toISOString(), // yesterday
+                timeMin: (new Date(2015,x.getMonth(),x.getDate()-0)).toISOString(), // today
                 timeMax: (new Date(2015,x.getMonth(),x.getDate()+45)).toISOString(), // next 45 or so days
                 maxResults: 1000,
                 singleEvents: true,
@@ -175,7 +175,7 @@ function gcMain(auth) {
                     console.log('No upcoming events found.');
                 } else {
                     var outfile = "Last Updated:" +new Date().toString()+'\r\n';
-                    var textDay=["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
+                    var textDay=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
                     console.log('Events found:',events.length);
                   //  console.log(events[10]);
