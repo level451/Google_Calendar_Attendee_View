@@ -7,6 +7,7 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 //var TOKEN_PATH = TOKEN_DIR + 'calendar-api-quickstart.json';
 var TOKEN_PATH = 'calendar-api-quickstart.json';
+var oldevents;
 
 
 start();
@@ -14,6 +15,18 @@ setInterval(function(){start(); }, 1000*60*30);
 
 function start() {
 // Load client secrets from a local file.
+    fs.readFile('lastevents.txt', function(err,file){
+        if (err){
+            oldevents = [];
+        } else
+        {
+            oldevents = JSON.parse(file);
+            //console.dir(oldevents);
+            console.log(oldevents[1]);
+
+        }
+
+    })
     fs.readFile('client_secret.json', function processClientSecrets(err, content) {
         if (err) {
             console.log('Error loading client secret file: ' + err);
@@ -171,6 +184,14 @@ function gcMain(auth) {
                     return;
                 }
                 var events = response.items;
+                fs.writeFile("lastevents.txt",JSON.stringify(events),function(err){
+                   if (err){console.log("error storeing calendar events:")}else
+                   {
+                       console.log("Wrote calendar events to local disk.")
+                   }
+
+
+                });
                 if (events.length == 0) {
                     console.log('No upcoming events found.');
                 } else {
@@ -185,7 +206,8 @@ function gcMain(auth) {
 
 //                        outfile = outfile + '"' + (start.getMonth() + 1) + '/' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + '-' + end.getHours() + ':' + end.getMinutes() + '",' + textDay[start.getDay()] + ',';
                         outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
-                        outfile = outfile + event.summary + ',';
+                      // outfile = outfile + '=HYPERLINK(\"'+event.htmlLink+'\",\"'+event.summary + '\"),';
+                        outfile = outfile + event.summary + ','+event.htmlLink+',';
                         process.stdout.write(".");
                         outfile = outfile+  ((new Date() - new Date(event.updated))/3600000)+',';
 
