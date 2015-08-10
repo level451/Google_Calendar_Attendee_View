@@ -20,9 +20,9 @@ function start() {
             oldevents = [];
         } else
         {
-            oldevents = JSON.parse(file);
+            //oldevents = JSON.parse(file);
             //console.dir(oldevents);
-            console.log(oldevents[1]);
+            //console.log(oldevents[1]);
 
         }
 
@@ -215,7 +215,7 @@ function gcMain(auth) {
                         //console.log(start +'-'+ end);
 
                         if ( typeof event.attendees != 'undefined'){
-                        for (var x = 0; x < event.attendees.length; x++) {
+                        for (var x = 0; x < (event.attendees.length> 1 ? 2:event.attendees.length); x++) {
                             var name = event.attendees[x].email;
                             // try to resolve the name from the email
                             for (var y = 0; y < contactData.length; ++y) {
@@ -229,6 +229,11 @@ function gcMain(auth) {
                             }
                             outfile = outfile + name + ',' + event.attendees[x].responseStatus + ',';
                         }
+
+                            if (event.attendees.length> 2){
+
+                                outfile=outfile+"And "+event.attendees.length+" Others";
+                            }
                     }else
                         {
                             // no attendees
