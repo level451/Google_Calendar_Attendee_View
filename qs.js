@@ -233,9 +233,9 @@ function gcMain(auth) {
                         var event = events[i];
 
                         var start = new Date(event.start.dateTime) || event.start.date;
-                        if (tempday != start.getDate())
+                        if (tempday != start.getDay())
                         {
-                            tempday = start.getDate();
+                            tempday = start.getDay();
                             outfile = outfile + '\r\n';
 
 
