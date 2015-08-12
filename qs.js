@@ -184,6 +184,33 @@ function gcMain(auth) {
                     return;
                 }
                 var events = response.items;
+                events.sort(function(o1,o2){
+                    if (o1.start.dateTime > o2.start.dateTime)
+                    {return 1;}
+                    else if (o1.start.dateTime==o2.start.dateTime)
+                    {
+                        //same time noew alphabetize
+                        if (o1.summary > o2.summary){
+                            return 1;
+                        } else
+                        {return -1;
+                        }
+
+
+
+
+                    }
+                    else {return -1}
+
+
+
+
+
+                });
+
+
+
+
                 fs.writeFile("lastevents.txt",JSON.stringify(events),function(err){
                    if (err){console.log("error storeing calendar events:")}else
                    {
@@ -200,10 +227,19 @@ function gcMain(auth) {
 
                     console.log('Events found:',events.length);
                   //  console.log(events[10]);
+                    var tempday = new Date(events[0].start.dateTime).getDay();
                     for (var i = 0; i < events.length; i++) {
-                        var event = events[i];
-                        var start = new Date(event.start.dateTime) || event.start.date;
 
+                        var event = events[i];
+
+                        var start = new Date(event.start.dateTime) || event.start.date;
+                        if (tempday != start.getDate())
+                        {
+                            tempday = start.getDate();
+                            outfile = outfile + '\r\n';
+
+
+                        }
 //                        outfile = outfile + '"' + (start.getMonth() + 1) + '/' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + '-' + end.getHours() + ':' + end.getMinutes() + '",' + textDay[start.getDay()] + ',';
                         outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
                       // outfile = outfile + '=HYPERLINK(\"'+event.htmlLink+'\",\"'+event.summary + '\"),';
