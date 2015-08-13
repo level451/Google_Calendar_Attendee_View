@@ -251,7 +251,7 @@ function gcMain(auth) {
                         //console.log(start +'-'+ end);
 
                         if ( typeof event.attendees != 'undefined'){
-                        for (var x = 0; x < (event.attendees.length> 1 ? 2:event.attendees.length); x++) {
+                        for (var x = 0; x < (event.attendees.length> 2 ? 3:event.attendees.length); x++) {
                             var name = event.attendees[x].email;
                             // try to resolve the name from the email
                             for (var y = 0; y < contactData.length; ++y) {
@@ -268,7 +268,7 @@ function gcMain(auth) {
 
                             if (event.attendees.length> 3){
 
-                                outfile=outfile+"And "+event.attendees.length-3+" Others";
+                                outfile=outfile+"And "+(event.attendees.length)+" Others";
                             }
                     }else
                         {
