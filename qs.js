@@ -266,9 +266,9 @@ function gcMain(auth) {
                             outfile = outfile + name + ',' + event.attendees[x].responseStatus + ',';
                         }
 
-                            if (event.attendees.length> 2){
+                            if (event.attendees.length> 3){
 
-                                outfile=outfile+"And "+event.attendees.length+" Others";
+                                outfile=outfile+"And "+event.attendees.length-3+" Others";
                             }
                     }else
                         {
