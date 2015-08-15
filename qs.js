@@ -26,7 +26,7 @@ function start() {
 
         }
 
-    })
+    });
     fs.readFile('client_secret.json', function processClientSecrets(err, content) {
         if (err) {
             console.log('Error loading client secret file: ' + err);
@@ -251,30 +251,69 @@ function gcMain(auth) {
                         //console.log(start +'-'+ end);
 
                         if ( typeof event.attendees != 'undefined'){
+                            // sort the attendee so facilitorator is last
+//                            event.attendees.sort(function(o1,o2){
+//                                if (o2.start.dateTime > o2.start.dateTime)
+//                                {return -1;}
+//
+//                            });
+
                         for (var x = 0; x < (event.attendees.length> 2 ? 3:event.attendees.length); x++) {
-                            var name = event.attendees[x].email;
+                           event.attendees[x].name = event.attendees[x].email;
                             // try to resolve the name from the email
                             for (var y = 0; y < contactData.length; ++y) {
 
                                 if (typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
-                                    name = contactData[y].name;
+                                    event.attendees[x].name = contactData[y].name;
                                     process.stdout.write("+");
                                     break;
 
                                 }
                             }
-                            outfile = outfile + name + ',' + event.attendees[x].responseStatus + ',';
+                            //outfile = outfile + event.attendees[x].name + ',' + event.attendees[x].responseStatus + ',';
                         }
 
-                            if (event.attendees.length> 3){
+                            if (typeof event.attendees[1] == 'undefined'){
+                                event.attendees[1] = {};
+                                event.attendees[1].name = '';
+                                event.attendees[1].responseStatus = '';
 
-                                outfile=outfile+"And "+(event.attendees.length)+" Others";
                             }
-                    }else
-                        {
-                            // no attendees
-                            process.stdout.write("X");
+                            if (typeof event.attendees[2] == 'undefined'){
+                                event.attendees[2] = {};
+                                event.attendees[2].name = '';
+                                event.attendees[2].responseStatus = '';
+
+                            }
+                        // make the facilitator in position 3
+                        if (event.attendees[0].name.indexOf("(Facilitator)") > 0){
+                            outfile = outfile + event.attendees[1].name + ',' + event.attendees[1].responseStatus + ',';
+                            outfile = outfile + event.attendees[2].name + ',' + event.attendees[2].responseStatus + ',';
+                            outfile = outfile + event.attendees[0].name + ',' + event.attendees[0].responseStatus + ',';
+
+                        } else if (event.attendees[1].name.indexOf("(Facilitator)") > 0) {
+                            outfile = outfile + event.attendees[0].name + ',' + event.attendees[0].responseStatus + ',';
+                            outfile = outfile + event.attendees[2].name + ',' + event.attendees[2].responseStatus + ',';
+                            outfile = outfile + event.attendees[1].name + ',' + event.attendees[1].responseStatus + ',';
+                        } else if (event.attendees[2].name.indexOf("(Facilitator)") > 0) {
+                            outfile = outfile + event.attendees[0].name + ',' + event.attendees[0].responseStatus + ',';
+                            outfile = outfile + event.attendees[1].name + ',' + event.attendees[1].responseStatus + ',';
+                            outfile = outfile + event.attendees[2].name + ',' + event.attendees[2].responseStatus + ',';
+                        } else{
+                            outfile = outfile + event.attendees[0].name + ',' + event.attendees[0].responseStatus + ',';
+                            outfile = outfile + event.attendees[1].name + ',' + event.attendees[1].responseStatus + ',';
+                            if (event.attendees.length > 3){
+                                outfile = outfile +',,'  +"And "+(event.attendees.length)+" Others";
+                            }
+
                         }
+
+
+
+
+
+
+                    }
 
                         outfile=outfile+'\r\n'
                     }
