@@ -251,22 +251,6 @@ function gcMain(auth) {
                         process.stdout.write(".");
                         outfile = outfile+  ((new Date() - new Date(event.updated))/3600000)+',';
 
-                        for (var y = 0; y < contactData.length; ++y) {
-                            console.log('event:'+i+"contacts:"+contactData.lenght);
-                            if (typeof event != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
-                                event.attendees[x].name = contactData[y].name;
-                                process.stdout.write("+");
-                                break;
-
-                            }
-                        }
-                        //outfile = outfile + event.attendees[x].name + ',' + event.attendees[x].responseStatus + ',';
-                    }
-
-                    if (typeof event.attendees[1] == 'undefined'){
-                        event.attendees[1] = {};
-                        event.attendees[1].name = '';
-                        event.attendees[1].responseStatus = '';
 
                         //  console.log(event.summary);
                         //console.log(start +'-'+ end);
@@ -282,7 +266,24 @@ function gcMain(auth) {
                         for (var x = 0; x < (event.attendees.length> 2 ? 3:event.attendees.length); x++) {
                            event.attendees[x].name = event.attendees[x].email;
                             // try to resolve the name from the email
-                             }
+                            for (var y = 0; y < contactData.length; ++y) {
+                                console.log('event:'+i+"contacts:"+contactData.length);
+                                if (typeof event != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
+                                    event.attendees[x].name = contactData[y].name;
+                                    process.stdout.write("+");
+                                    break;
+
+                                }
+                            }
+                            //outfile = outfile + event.attendees[x].name + ',' + event.attendees[x].responseStatus + ',';
+                        }
+
+                            if (typeof event.attendees[1] == 'undefined'){
+                                event.attendees[1] = {};
+                                event.attendees[1].name = '';
+                                event.attendees[1].responseStatus = '';
+
+                            }
                             if (typeof event.attendees[2] == 'undefined'){
                                 event.attendees[2] = {};
                                 event.attendees[2].name = '';
