@@ -223,7 +223,7 @@ function gcMain(auth) {
                 if (events.length == 0) {
                     console.log('No upcoming events found.');
                 } else {
-                    console.log('Events found:'+events.length);
+
                     var outfile = "Last Updated:" +new Date().toString()+'\r\n';
                     var textDay=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
@@ -252,7 +252,7 @@ function gcMain(auth) {
                         outfile = outfile+  ((new Date() - new Date(event.updated))/3600000)+',';
 
                         for (var y = 0; y < contactData.length; ++y) {
-                            console.log('event:'+i);
+                            console.log('event:'+i+"contacts:"+contactData.lenght);
                             if (typeof event != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
                                 event.attendees[x].name = contactData[y].name;
                                 process.stdout.write("+");
