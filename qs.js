@@ -242,9 +242,9 @@ function gcMain(auth) {
 
                         }
 //                        outfile = outfile + '"' + (start.getMonth() + 1) + '/' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + '-' + end.getHours() + ':' + end.getMinutes() + '",' + textDay[start.getDay()] + ',';
-                        outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
+                        //outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
                         // added year
-                      //  outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() +'/'+start.getYear()+ ','+ textDay[start.getDay()] + ',';
+                        outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() +'/'+start.getYear()+ ','+ textDay[start.getDay()] + ',';
                       // outfile = outfile + '=HYPERLINK(\"'+event.htmlLink+'\",\"'+event.summary + '\"),';
                         outfile = outfile + event.summary + ','+event.htmlLink+',';
                         process.stdout.write(".");
@@ -252,7 +252,7 @@ function gcMain(auth) {
 
                         for (var y = 0; y < contactData.length; ++y) {
 
-                            if (typeof contactData[y] != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
+                            if (typeof event.attendees[x].email != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
                                 event.attendees[x].name = contactData[y].name;
                                 process.stdout.write("+");
                                 break;
