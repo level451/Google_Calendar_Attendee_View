@@ -252,7 +252,7 @@ function gcMain(auth) {
                         outfile = outfile+  ((new Date() - new Date(event.updated))/3600000)+',';
 
                         for (var y = 0; y < contactData.length; ++y) {
-
+                            console.log('event:'+i);
                             if (typeof event != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
                                 event.attendees[x].name = contactData[y].name;
                                 process.stdout.write("+");
