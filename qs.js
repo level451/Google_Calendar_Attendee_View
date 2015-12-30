@@ -242,9 +242,9 @@ function gcMain(auth) {
 
                         }
 //                        outfile = outfile + '"' + (start.getMonth() + 1) + '/' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + '-' + end.getHours() + ':' + end.getMinutes() + '",' + textDay[start.getDay()] + ',';
-                        //outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
+                        outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
                         // added year
-                        outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() +'/'+start.getYear()+ ','+ textDay[start.getDay()] + ',';
+                      //  outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() +'/'+start.getYear()+ ','+ textDay[start.getDay()] + ',';
                       // outfile = outfile + '=HYPERLINK(\"'+event.htmlLink+'\",\"'+event.summary + '\"),';
                         outfile = outfile + event.summary + ','+event.htmlLink+',';
                         process.stdout.write(".");
