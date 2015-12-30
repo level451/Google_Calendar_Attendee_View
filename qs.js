@@ -173,8 +173,9 @@ function gcMain(auth) {
             calendar.events.list({
                 auth: auth,
                 calendarId: 'primary',
-                timeMin: (new Date(2015,x.getMonth(),x.getDate()-0)).toISOString(), // today
-                timeMax: (new Date(2015,x.getMonth(),x.getDate()+45)).toISOString(), // next 45 or so days
+                // added getyear instead of 2015
+                timeMin: (new Date(x.getYear(),x.getMonth(),x.getDate()-0)).toISOString(), // today
+                timeMax: (new Date(x.getYear(),x.getMonth(),x.getDate()+45)).toISOString(), // next 45 or so days
                 maxResults: 1000,
                 singleEvents: true,
                 orderBy: 'startTime'
@@ -241,11 +242,30 @@ function gcMain(auth) {
 
                         }
 //                        outfile = outfile + '"' + (start.getMonth() + 1) + '/' + start.getDate() + ' ' + start.getHours() + ':' + start.getMinutes() + '-' + end.getHours() + ':' + end.getMinutes() + '",' + textDay[start.getDay()] + ',';
-                        outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
+                        //outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() + ','+ textDay[start.getDay()] + ',';
+                        // added year
+                        outfile = outfile  + (start.getMonth() + 1) + '/' + start.getDate() +'/'+start.getYear()+ ','+ textDay[start.getDay()] + ',';
                       // outfile = outfile + '=HYPERLINK(\"'+event.htmlLink+'\",\"'+event.summary + '\"),';
                         outfile = outfile + event.summary + ','+event.htmlLink+',';
                         process.stdout.write(".");
                         outfile = outfile+  ((new Date() - new Date(event.updated))/3600000)+',';
+
+                        for (var y = 0; y < contactData.length; ++y) {
+
+                            if (typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
+                                event.attendees[x].name = contactData[y].name;
+                                process.stdout.write("+");
+                                break;
+
+                            }
+                        }
+                        //outfile = outfile + event.attendees[x].name + ',' + event.attendees[x].responseStatus + ',';
+                    }
+
+                    if (typeof event.attendees[1] == 'undefined'){
+                        event.attendees[1] = {};
+                        event.attendees[1].name = '';
+                        event.attendees[1].responseStatus = '';
 
                         //  console.log(event.summary);
                         //console.log(start +'-'+ end);
@@ -261,24 +281,7 @@ function gcMain(auth) {
                         for (var x = 0; x < (event.attendees.length> 2 ? 3:event.attendees.length); x++) {
                            event.attendees[x].name = event.attendees[x].email;
                             // try to resolve the name from the email
-                            for (var y = 0; y < contactData.length; ++y) {
-
-                                if (typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
-                                    event.attendees[x].name = contactData[y].name;
-                                    process.stdout.write("+");
-                                    break;
-
-                                }
-                            }
-                            //outfile = outfile + event.attendees[x].name + ',' + event.attendees[x].responseStatus + ',';
-                        }
-
-                            if (typeof event.attendees[1] == 'undefined'){
-                                event.attendees[1] = {};
-                                event.attendees[1].name = '';
-                                event.attendees[1].responseStatus = '';
-
-                            }
+                             }
                             if (typeof event.attendees[2] == 'undefined'){
                                 event.attendees[2] = {};
                                 event.attendees[2].name = '';
