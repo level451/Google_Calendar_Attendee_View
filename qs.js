@@ -252,7 +252,7 @@ function gcMain(auth) {
 
                         for (var y = 0; y < contactData.length; ++y) {
 
-                            if (typeof event.attendees[x].email != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
+                            if (typeof event.attendees[x] != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
                                 event.attendees[x].name = contactData[y].name;
                                 process.stdout.write("+");
                                 break;
