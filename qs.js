@@ -174,8 +174,8 @@ function gcMain(auth) {
                 auth: auth,
                 calendarId: 'primary',
                 // added getyear instead of 2015
-                timeMin: (new Date(x.getYear(),x.getMonth(),x.getDate()-0)).toISOString(), // today
-                timeMax: (new Date(x.getYear(),x.getMonth(),x.getDate()+45)).toISOString(), // next 45 or so days
+                timeMin: (new Date(x.getFullYear(),x.getMonth(),x.getDate()-0)).toISOString(), // today
+                timeMax: (new Date(x.getFullYear(),x.getMonth(),x.getDate()+45)).toISOString(), // next 45 or so days
                 maxResults: 1000,
                 singleEvents: true,
                 orderBy: 'startTime'
