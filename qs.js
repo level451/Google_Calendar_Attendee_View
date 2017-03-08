@@ -174,6 +174,7 @@ function gcMain(auth) {
 
 
             }
+            return;
             var calendar = google.calendar('v3');
             x = new Date();
             calendar.events.list({
