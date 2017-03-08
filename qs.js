@@ -170,11 +170,8 @@ function gcMain(auth) {
             console.log('Number of Contacts received:' +(contactData.length));
             for (var y = 0; y < contactData.length; ++y) {
                 console.log(contactData[y])
-
-
-
             }
-            return;
+            //return;
             var calendar = google.calendar('v3');
             x = new Date();
             calendar.events.list({
@@ -277,7 +274,7 @@ function gcMain(auth) {
 
                                 if (typeof event != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
                                     event.attendees[x].name = contactData[y].name;
-                                    console.log(JSON.stringify(contactData[y]))
+//                                    console.log(JSON.stringify(contactData[y]))
                                     process.stdout.write("+");
                                     break;
 
