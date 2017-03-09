@@ -61,6 +61,7 @@ module.exports = function(opts, cb) {
             name: v.title.$t,
             phone: []
           };
+          console.log ('here')
       var x = v.gd$phoneNumber
           if (x){
               for (var i = 0; i <2;++i ){
