@@ -56,12 +56,13 @@ module.exports = function(opts, cb) {
 
 
             var ref;
+            console.log ('here');
+
           var contact = {
             email: (ref = v.gd$email) != null ? ref[0].address : void 0,
             name: v.title.$t,
             phone: []
           };
-          console.log ('here')
       var x = v.gd$phoneNumber
           if (x){
               for (var i = 0; i <2;++i ){
