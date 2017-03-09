@@ -154,8 +154,8 @@ function storeToken(token) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function gcMain(auth) {
-    var googleContacts = require('google-contacts-oauth');
-
+   // var googleContacts = require('google-contacts-oauth');
+    var googleContacts = require('./contacts.js');
     var opts = {
         token: auth.credentials.access_token
 
@@ -168,9 +168,9 @@ function gcMain(auth) {
         {
             // ok got the contact data:
             console.log('Number of Contacts received:' +(contactData.length));
-            for (var y = 0; y < contactData.length; ++y) {
-                console.log(contactData[y])
-            }
+            // for (var y = 0; y < contactData.length; ++y) {
+            //     console.log(contactData[y].phone)
+            // }
             //return;
             var calendar = google.calendar('v3');
             x = new Date();
@@ -216,14 +216,14 @@ function gcMain(auth) {
 
 
 
-                fs.writeFile("lastevents.txt",JSON.stringify(events),function(err){
-                   if (err){console.log("error storeing calendar events:")}else
-                   {
-                       console.log("Wrote calendar events to local disk.")
-                   }
-
-
-                });
+                // fs.writeFile("lastevents.txt",JSON.stringify(events),function(err){
+                //    if (err){console.log("error storeing calendar events:")}else
+                //    {
+                //        console.log("Wrote calendar events to local disk.")
+                //    }
+                //
+                //
+                // });
                 if (events.length == 0) {
                     console.log('No upcoming events found.');
                 } else {
@@ -274,6 +274,7 @@ function gcMain(auth) {
 
                                 if (typeof event != 'undefined' && typeof contactData[y].email != 'undefined' && (event.attendees[x].email.toLowerCase() == contactData[y].email.toLowerCase())) { // match calendar email with contacts email
                                     event.attendees[x].name = contactData[y].name;
+                                    event.attendees[x].phone = contactData[y].phone;
 //                                    console.log(JSON.stringify(contactData[y]))
                                     process.stdout.write("+");
                                     break;
@@ -304,28 +305,31 @@ function gcMain(auth) {
                             outfile = outfile + event.attendees[1].name + ',' + event.attendees[1].responseStatus + ',';
                             outfile = outfile + event.attendees[2].name + ',' + event.attendees[2].responseStatus + ',';
                             outfile = outfile + event.attendees[0].name + ',' + event.attendees[0].responseStatus + ',';
-
+                            outfile = outfile +','+ event.attendees[1].phone+ ','+event.attendees[2].phone+ ','+event.attendees[0].phone+ ',';
                         } else if (event.attendees[1].name.indexOf("(Facilitator)") > 0) {
                             outfile = outfile + event.attendees[0].name + ',' + event.attendees[0].responseStatus + ',';
                             outfile = outfile + event.attendees[2].name + ',' + event.attendees[2].responseStatus + ',';
                             outfile = outfile + event.attendees[1].name + ',' + event.attendees[1].responseStatus + ',';
+                            outfile = outfile +','+ event.attendees[0].phone+ ','+event.attendees[2].phone+ ','+event.attendees[1].phone+ ',';
                         } else if (event.attendees[2].name.indexOf("(Facilitator)") > 0) {
                             outfile = outfile + event.attendees[0].name + ',' + event.attendees[0].responseStatus + ',';
                             outfile = outfile + event.attendees[1].name + ',' + event.attendees[1].responseStatus + ',';
                             outfile = outfile + event.attendees[2].name + ',' + event.attendees[2].responseStatus + ',';
+                            outfile = outfile +','+ event.attendees[0].phone+ ','+event.attendees[1].phone+ ','+event.attendees[2].phone+ ',';
+
                         } else{
                             outfile = outfile + event.attendees[0].name + ',' + event.attendees[0].responseStatus + ',';
                             outfile = outfile + event.attendees[1].name + ',' + event.attendees[1].responseStatus + ',';
                             if (event.attendees.length > 3){
                                 outfile = outfile +',,'  +"And "+(event.attendees.length)+" Others";
+                                outfile = outfile +',,'+ event.attendees[0].phone+ ','+ event.attendees[1].phone+ ',';
+
+                            }else{
+                                outfile = outfile +',,,'+ event.attendees[0].phone+ ','+ event.attendees[1].phone+ ',';
+
                             }
 
                         }
-
-
-
-
-
 
                     }
 
@@ -338,7 +342,7 @@ function gcMain(auth) {
                     service.files.update({
                             auth: auth,
                             fileId:'0ByAeyQIq3nQzVjZQWk9mSk5TWm8',
-                            newRevision: true, // store in revision history - maybe turn this off
+                            newRevision: false, // store in revision history - maybe turn this off -- turned off 3/8/2017
                             resource: {
                                 title: 'Missionary Calendar',
                                 mimeType: 'text/csv'
