@@ -11,27 +11,30 @@ var oldevents;
 
 
 start();
-setInterval(function(){start(); }, 1000*60*30);
+setInterval(function(){start(); }, 1000*60*120);
 
 function start() {
 // Load client secrets from a local file.
-    fs.readFile('lastevents.txt', function(err,file){
-        if (err){
-            oldevents = [];
-        } else
-        {
-            //oldevents = JSON.parse(file);
-            //console.dir(oldevents);
-            //console.log(oldevents[1]);
-
-        }
-
-    });
+   console.log('At start')
+    // fs.readFile('lastevents.txt', function(err,file){
+    //     if (err){
+    //         oldevents = [];
+    //     } else
+    //     {
+    //         //oldevents = JSON.parse(file);
+    //         //console.dir(oldevents);
+    //         //console.log(oldevents[1]);
+    //
+    //     }
+    //
+    // });
     fs.readFile('client_secret.json', function processClientSecrets(err, content) {
         if (err) {
             console.log('Error loading client secret file: ' + err);
             return;
         }
+        console.log('reading client secret')
+
         // Authorize a client with the loaded credentials, then call the
         // Google Calendar API.
         authorize(JSON.parse(content), gcMain);
@@ -154,7 +157,9 @@ function storeToken(token) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function gcMain(auth) {
-   // var googleContacts = require('google-contacts-oauth');
+    console.log('authorized - now running apis')
+
+    // var googleContacts = require('google-contacts-oauth');
     var googleContacts = require('./contacts.js');
     var opts = {
         token: auth.credentials.access_token

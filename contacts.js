@@ -56,7 +56,6 @@ module.exports = function(opts, cb) {
 
 
             var ref;
-            console.log ('here');
 
           var contact = {
             email: (ref = v.gd$email) != null ? ref[0].address : void 0,
