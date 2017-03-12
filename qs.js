@@ -8,10 +8,10 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 //var TOKEN_PATH = TOKEN_DIR + 'calendar-api-quickstart.json';
 var TOKEN_PATH = 'calendar-api-quickstart.json';
 var oldevents;
-
+var lastversion = null;
 
 start();
-setInterval(function(){start(); }, 1000*60*120);
+setInterval(function(){start(); }, 1000*300); // check every 5 min
 
 function start() {
 // Load client secrets from a local file.
@@ -258,8 +258,9 @@ function gcMain(auth) {
                       // outfile = outfile + '=HYPERLINK(\"'+event.htmlLink+'\",\"'+event.summary + '\"),';
                         outfile = outfile + event.summary + ','+event.htmlLink+',';
                         process.stdout.write(".");
-                        outfile = outfile+  ((new Date() - new Date(event.updated))/3600000)+',';
-
+                        // remove last edit so change dection can work 3/12/2017
+                        //outfile = outfile+  ((new Date() - new Date(event.updated))/3600000)+',';
+                        outfile = outfile+  '500,';
 
                         //  console.log(event.summary);
                         //console.log(start +'-'+ end);
@@ -341,28 +342,42 @@ function gcMain(auth) {
                         outfile=outfile+'\r\n'
                     }
                     console.log(":)");
+if (lastversion != null){
+    console.log('here')
 
-                    var service = google.drive('v2');
+}
+                    if (lastversion == null || lastversion.substring(lastversion.indexOf('\r\n')) != outfile.substring(outfile.indexOf('\r\n'))) {
+
+                        lastversion = outfile
+
+                        var service = google.drive('v2');
 //        service.files.insert({
-                    service.files.update({
-                            auth: auth,
-                            fileId:'0ByAeyQIq3nQzVjZQWk9mSk5TWm8',
-                            newRevision: false, // store in revision history - maybe turn this off -- turned off 3/8/2017
-                            resource: {
-                                title: 'Missionary Calendar',
-                                mimeType: 'text/csv'
-                            },media: {
-                                mimeType: 'text/csv',
-                                body:outfile
+
+                        service.files.update({
+                                auth: auth,
+                                fileId: '0ByAeyQIq3nQzVjZQWk9mSk5TWm8',
+                                newRevision: false, // store in revision history - maybe turn this off -- turned off 3/8/2017
+                                resource: {
+                                    title: 'Missionary Calendar',
+                                    mimeType: 'text/csv'
+                                }, media: {
+                                    mimeType: 'text/csv',
+                                    body: outfile
+                                }
+                            }, function (err, response) {
+                                if (err) {
+                                    console.log('The file update API returned an error: ' + err);
+                                    return;
+                                }
+                                console.log('Wrote file to google drive:' + response.originalFilename, response.fileSize, new Date());
                             }
-                        },function(err,response){
-                            if (err) {
-                                console.log('The file update API returned an error: ' + err);
-                                return;
-                            }
-                            console.log('Wrote file to google drive:'+response.originalFilename,response.fileSize,new Date());
-                        }
-                    )
+                        )
+
+
+                    } else
+                    {
+                        console.log('no changes detected version not updated!')
+                    }
                 }
             });
 
